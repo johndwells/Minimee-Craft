@@ -676,8 +676,8 @@ class MinimeeService extends BaseApplicationComponent
 			{
 				$model = array(
 					'filename' => $asset,
-					'filenameUrl' => $this->settings->baseUrl . $asset,
-					'filenamePath' => $this->settings->filesystemPath . $asset
+					'filenameUrl' => craft()->config->parseEnvironmentString($this->settings->baseUrl) . $asset,
+					'filenamePath' => craft()->config->parseEnvironmentString($this->settings->filesystemPath) . $asset
 				);
 
 				$this->_assets[] = minimee()->makeLocalAssetModel($model);
