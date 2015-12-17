@@ -21,252 +21,252 @@ use \SelvinOrtiz\Zit\Zit;
 class MinimeePlugin extends BasePlugin
 {
 
-	/**
-	 * @return String
-	 */
-	public function getName()
-	{
-		return 'Minimee';
-	}
+    /**
+     * @return String
+     */
+    public function getName()
+    {
+        return 'Minimee';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getVersion()
-	{
-		return '0.9.6';
-	}
+    /**
+     * @return String
+     */
+    public function getVersion()
+    {
+        return '0.9.6';
+    }
 
-	/**
-	 * @since Minimee 0.9.5
-	 * @return String
-	 */
-	public function getSchemaVersion()
-	{
-		return '1.0.0';
-	}
+    /**
+     * @since Minimee 0.9.5
+     * @return String
+     */
+    public function getSchemaVersion()
+    {
+        return '1.0.0';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getDeveloper()
-	{
-		return 'John D Wells';
-	}
+    /**
+     * @return String
+     */
+    public function getDeveloper()
+    {
+        return 'John D Wells';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getDeveloperUrl()
-	{
-		return 'http://johndwells.com';
-	}
+    /**
+     * @return String
+     */
+    public function getDeveloperUrl()
+    {
+        return 'http://johndwells.com';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getDescription()
-	{
-		return 'Minimize, combine & cache your CSS and JS files.';
-	}
+    /**
+     * @return String
+     */
+    public function getDescription()
+    {
+        return 'Minimize, combine & cache your CSS and JS files.';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getDocumentationUrl()
-	{
-		return 'https://github.com/johndwells/craft.minimee/blob/master/README.md';
-	}
+    /**
+     * @return String
+     */
+    public function getDocumentationUrl()
+    {
+        return 'https://github.com/johndwells/craft.minimee/blob/master/README.md';
+    }
 
-	/**
-	 * @return String
-	 */
-	public function getReleaseFeedUrl()
-	{
-		return 'https://raw.githubusercontent.com/johndwells/craft.releases/master/minimee.json';
-	}
+    /**
+     * @return String
+     */
+    public function getReleaseFeedUrl()
+    {
+        return 'https://raw.githubusercontent.com/johndwells/craft.releases/master/minimee.json';
+    }
 
-	/**
-	 * @return Bool
-	 */
-	public function hasCpSection()
-	{
-		return false;
-	}
+    /**
+     * @return Bool
+     */
+    public function hasCpSection()
+    {
+        return false;
+    }
 
-	/**
-	 * Autoloading, Dependency Injection, Hook & Event binding
-	 *
-	 * @return Void
-	 */
-	public function init()
-	{
-		$this->_autoload();
+    /**
+     * Autoloading, Dependency Injection, Hook & Event binding
+     *
+     * @return Void
+     */
+    public function init()
+    {
+        $this->_autoload();
 
-		$this->_registerMinimeeDI();
+        $this->_registerMinimeeDI();
 
-		$this->_bindEvents();
-	}
+        $this->_bindEvents();
+    }
 
-	/**
-	 * Logging any messages to Craft.
-	 *
-	 * @param String $msg
-	 * @param String $level
-	 * @param Bool $force
-	 * @return Void
-	 */
-	public static function log($msg, $level = LogLevel::Info, $force = false)
-	{
-		if (version_compare('2.0', craft()->getVersion(), '>'))
-		{
-			Craft::log($msg, $level, $force);
-		}
-		else
-		{
-			parent::log($msg, $level, $force);
-		}
-	}
+    /**
+     * Logging any messages to Craft.
+     *
+     * @param String $msg
+     * @param String $level
+     * @param Bool $force
+     * @return Void
+     */
+    public static function log($msg, $level = LogLevel::Info, $force = false)
+    {
+        if (version_compare('2.0', craft()->getVersion(), '>'))
+        {
+            Craft::log($msg, $level, $force);
+        }
+        else
+        {
+            parent::log($msg, $level, $force);
+        }
+    }
 
-	/**
-	 * We define our setting attributes by way of our own Minimee_SettingsModel.
-	 *
-	 * @return Array
-	 */
-	public function defineSettings()
-	{
-		$this->_autoload();
+    /**
+     * We define our setting attributes by way of our own Minimee_SettingsModel.
+     *
+     * @return Array
+     */
+    public function defineSettings()
+    {
+        $this->_autoload();
 
-		// we don't use DI here because defineSettings() may get run without first running init()
-		$settings = new Minimee_SettingsModel();
+        // we don't use DI here because defineSettings() may get run without first running init()
+        $settings = new Minimee_SettingsModel();
 
-		return $settings->defineAttributes();
-	}
+        return $settings->defineAttributes();
+    }
 
-	/**
-	 * Renders the settings form to configure Minimee
-	 * @return String
-	 */
-	public function getSettingsHtml()
-	{
-		$filesystemConfigPath = craft()->path->getConfigPath() . 'minimee.php';
+    /**
+     * Renders the settings form to configure Minimee
+     * @return String
+     */
+    public function getSettingsHtml()
+    {
+        $filesystemConfigPath = craft()->path->getConfigPath() . 'minimee.php';
 
-		return craft()->templates->render('minimee/settings', array(
-			'settings' => $this->getSettings(),
-			'filesystemConfigExists' => (bool)IOHelper::fileExists($filesystemConfigPath)
+        return craft()->templates->render('minimee/settings', array(
+            'settings' => $this->getSettings(),
+            'filesystemConfigExists' => (bool)IOHelper::fileExists($filesystemConfigPath)
 
-		));
-	}
+        ));
+    }
 
-	/**
-	 * Register our Twig filter
-	 *
-	 * @return Twig_Extension
-	 **/
-	public function addTwigExtension()
-	{
-		Craft::import('plugins.minimee.twigextensions.MinimeeTwigExtension');
+    /**
+     * Register our Twig filter
+     *
+     * @return Twig_Extension
+     **/
+    public function addTwigExtension()
+    {
+        Craft::import('plugins.minimee.twigextensions.MinimeeTwigExtension');
 
-		return new MinimeeTwigExtension();
-	}
+        return new MinimeeTwigExtension();
+    }
 
-	public function prepSettings($settings)
-	{
-		$this->_autoload();
+    public function prepSettings($settings)
+    {
+        $this->_autoload();
 
-		// we don't use DI here because prepSettings() may get run without first running init()
-		$settingsModel = new Minimee_SettingsModel();
+        // we don't use DI here because prepSettings() may get run without first running init()
+        $settingsModel = new Minimee_SettingsModel();
 
-		return $settingsModel->prepSettings($settings);
-	}
+        return $settingsModel->prepSettings($settings);
+    }
 
-	/**
-	 * Enable ability to serve cache assets from resources/minimee folder
-	 *
-	 * @return String
-	 */
-	public function getResourcePath($path)
-	{
-		if (strncmp($path, 'minimee/', 8) === 0)
-		{
-			return craft()->path->getStoragePath() . 'minimee/' . substr($path, 8);
-		}
-	}
+    /**
+     * Enable ability to serve cache assets from resources/minimee folder
+     *
+     * @return String
+     */
+    public function getResourcePath($path)
+    {
+        if (strncmp($path, 'minimee/', 8) === 0)
+        {
+            return craft()->path->getStoragePath() . 'minimee/' . substr($path, 8);
+        }
+    }
 
-	/**
-	 * Register our cache path that can then be deleted from CP
-	 */
-	public function registerCachePaths()
-	{
-		if (minimee()->service->settings->useResourceCache())
-		{
-			return array(
-				minimee()->service->makePathToStorageFolder() => Craft::t('Minimee caches')
-			);
-		}
-		else
-		{
-			return array();
-		}
-	}
+    /**
+     * Register our cache path that can then be deleted from CP
+     */
+    public function registerCachePaths()
+    {
+        if (minimee()->service->settings->useResourceCache())
+        {
+            return array(
+                minimee()->service->makePathToStorageFolder() => Craft::t('Minimee caches')
+            );
+        }
+        else
+        {
+            return array();
+        }
+    }
 
 
-	/**
-	 * Watch for the "createCache" event, and if in devMode, try to
-	 * clean up any expired caches
-	 *
-	 * @return void
-	 */
-	protected function _bindEvents()
-	{
-		craft()->on('minimee.createCache', function() {
-			if(craft()->config->get('devMode'))
-			{
-				minimee()->service->deleteExpiredCache();
-			}
-		});
-	}
+    /**
+     * Watch for the "createCache" event, and if in devMode, try to
+     * clean up any expired caches
+     *
+     * @return void
+     */
+    protected function _bindEvents()
+    {
+        craft()->on('minimee.createCache', function() {
+            if(craft()->config->get('devMode'))
+            {
+                minimee()->service->deleteExpiredCache();
+            }
+        });
+    }
 
-	/**
-	 * Require any enums used across Minimee
-	 *
-	 * @return Void
-	 */
-	protected function _autoload()
-	{
-		require_once craft()->path->getPluginsPath() . 'minimee/library/vendor/autoload.php';
+    /**
+     * Require any enums used across Minimee
+     *
+     * @return Void
+     */
+    protected function _autoload()
+    {
+        require_once craft()->path->getPluginsPath() . 'minimee/library/vendor/autoload.php';
 
-		Craft::import('plugins.minimee.enums.MinimeeType');
-		Craft::import('plugins.minimee.models.Minimee_ISettingsModel');
-		Craft::import('plugins.minimee.models.Minimee_SettingsModel');
-	}
+        Craft::import('plugins.minimee.enums.MinimeeType');
+        Craft::import('plugins.minimee.models.Minimee_ISettingsModel');
+        Craft::import('plugins.minimee.models.Minimee_SettingsModel');
+    }
 
-	/**
-	 * Registers all Dependency Injection
-	 *
-	 * @return Void
-	 */
-	protected function _registerMinimeeDI()
-	{
-		minimee()->stash('plugin', $this);
-		minimee()->stash('service', craft()->minimee);
+    /**
+     * Registers all Dependency Injection
+     *
+     * @return Void
+     */
+    protected function _registerMinimeeDI()
+    {
+        minimee()->stash('plugin', $this);
+        minimee()->stash('service', craft()->minimee);
 
-		minimee()->extend('makeSettingsModel', function(Zit $zit, $attributes = array()) {
-			return new Minimee_SettingsModel($attributes);
-		});
+        minimee()->extend('makeSettingsModel', function(Zit $zit, $attributes = array()) {
+            return new Minimee_SettingsModel($attributes);
+        });
 
-		minimee()->extend('makeLocalAssetModel', function(Zit $zit, $attributes = array()) {
-			return new Minimee_LocalAssetModel($attributes);
-		});
+        minimee()->extend('makeLocalAssetModel', function(Zit $zit, $attributes = array()) {
+            return new Minimee_LocalAssetModel($attributes);
+        });
 
-		minimee()->extend('makeRemoteAssetModel', function(Zit $zit, $attributes = array()) {
-			return new Minimee_RemoteAssetModel($attributes);
-		});
+        minimee()->extend('makeRemoteAssetModel', function(Zit $zit, $attributes = array()) {
+            return new Minimee_RemoteAssetModel($attributes);
+        });
 
-		minimee()->extend('makeClient', function() {
-			return new Client;
-		});
-	}
+        minimee()->extend('makeClient', function() {
+            return new Client;
+        });
+    }
 }
 
 /**
@@ -274,8 +274,8 @@ class MinimeePlugin extends BasePlugin
  */
 if (!function_exists('\\Craft\\minimee'))
 {
-	function minimee()
-	{
-		return Zit::getInstance();
-	}
+    function minimee()
+    {
+        return Zit::getInstance();
+    }
 }
