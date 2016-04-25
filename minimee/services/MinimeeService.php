@@ -674,12 +674,12 @@ class MinimeeService extends BaseApplicationComponent
 		if($this->settings->minifyJsEnabled)
 		{
 			$contents = \JSMin::minify($asset->contents);
-		}
-
-		// Play nice with others by ensuring a semicolon at eof
-		if(substr($contents, -1) != ';')
-		{
-			$contents .= ';';
+			
+			// Play nice with others by ensuring a semicolon at eof
+			if(substr($contents, -1) != ';')
+			{
+				$contents .= ';';
+			}
 		}
 
 		return $contents;
