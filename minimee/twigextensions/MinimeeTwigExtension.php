@@ -82,7 +82,11 @@ class MinimeeTwigExtension extends \Twig_Extension
 			return minimee()->service->makeTwigMarkupFromHtml($html);
 		}
 
+		$inlineAssets = $this->pregMatchInlineAssets($html, $type);
+
 		$minifiedAsTags = minimee()->service->makeTagsByType($type, $minified);
+
+		$minifiedAsTags .= $inlineAssets;
 
 		// return minified tag(s) as Twig Markup
 		return minimee()->service->makeTwigMarkupFromHtml($minifiedAsTags);
@@ -140,5 +144,34 @@ class MinimeeTwigExtension extends \Twig_Extension
 		}
 
 		return $matches[1];
+	}
+
+	protected function pregMatchInlineAssets($html, $type)
+	{
+		switch (strtolower($type)) :
+
+			case MinimeeType::Css :
+				$pat = "/<style.*>.*<\/style>/imsU";
+			break;
+
+			case MinimeeType::Js :
+				$pat = "/<script(?(?!src).)*>.*<\/script>/imsU";
+			break;
+
+			default :
+				return FALSE;
+
+		endswitch;
+
+		if (!preg_match_all($pat, $html, $matches, PREG_PATTERN_ORDER))
+		{
+			return FALSE;
+		}
+
+		if(count($matches) && count($matches[0])) {
+			return $matches[0][0];
+		}
+
+		return FALSE;
 	}
 }
