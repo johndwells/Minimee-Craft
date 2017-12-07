@@ -365,8 +365,6 @@ class MinimeeService extends BaseApplicationComponent
 		}
 
 		$this->setPluginSettings($settings);
-
-		MinimeePlugin::log(Craft::t('Minimee has been initialised.'));
 	}
 
 	/**
